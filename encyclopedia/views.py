@@ -1,4 +1,5 @@
 import markdown2
+import random
 from django import forms
 from django.shortcuts import render,redirect
 
@@ -97,3 +98,15 @@ def editEntry(request,title):
         "editForm": EditForm(initial={'description': description}),
         "form": QueryForm()
     })
+
+def randomEntry(request):
+    entries = util.list_entries()
+
+    if entries:
+        randomEntry = random.choice(entries)
+        return redirect('entry', title=randomEntry)
+    else:
+        return render(request, "encyclopedia/error.html", {
+            "form": QueryForm(),
+            "message": "No entries available."
+        })
