@@ -7,6 +7,12 @@ from . import util
 class QueryForm(forms.Form):
     query = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': 'Search Encyclopedia'}))
 
+class NewEntryForm(forms.Form):
+    title = forms.CharField(label="Title")
+    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'cols': 100, 'rows': 15}))
+
+class EditForm(forms.Form):
+    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'cols': 100, 'rows': 15}))
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -46,9 +52,48 @@ def search(request):
                 "results": results,
                 "form": form
             })
-        else: 
-            print(f"Form error: {form.errors}")
     
     return render(request, "encyclopedia/search.html", {
+        "form": QueryForm()
+    })
+
+
+def newEntry(request):
+    message = "The entry already exists with the provided title"
+
+    if request.method == "POST":
+        form = NewEntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"].capitalize()
+            description = form.cleaned_data["description"]
+
+            if title in util.list_entries():
+                return render(request, "encyclopedia/error.html",{
+                    "form": QueryForm(),
+                    "message": message
+                })
+            else: 
+                util.save_entry(title,description)
+                return redirect('entry', title=title)
+
+    return render(request, "encyclopedia/newPage.html", {
+        "newEntryForm": NewEntryForm(),
+        "form": QueryForm()
+    })
+
+
+def editEntry(request,title):
+    description = util.get_entry(title)
+
+    if request.method == "POST":
+        form = EditForm(request.POST)
+        if form.is_valid():
+            description = form.cleaned_data["description"]
+            util.save_entry(title,description)
+            return redirect('entry', title=title)
+
+    return render(request, "encyclopedia/editPage.html", {
+        "title": title,
+        "editForm": EditForm(initial={'description': description}),
         "form": QueryForm()
     })
