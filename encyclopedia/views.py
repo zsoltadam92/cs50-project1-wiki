@@ -6,14 +6,14 @@ from django.shortcuts import render,redirect
 from . import util
 
 class QueryForm(forms.Form):
-    query = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': 'Search Encyclopedia'}))
+    query = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': 'Search Encyclopedia', 'class': 'form-control col-lg-12 mb-2'}))
 
 class NewEntryForm(forms.Form):
-    title = forms.CharField(label="Title")
-    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'cols': 100, 'rows': 15}))
+    title = forms.CharField(label="Title", widget=forms.TextInput(attrs={'class': 'form-control col-lg-2 col-md-3  mb-2'}))
+    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'cols': 100, 'rows': 15, 'class': 'form-control col-lg-8  mb-2'}))
 
 class EditForm(forms.Form):
-    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'cols': 100, 'rows': 15}))
+    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'cols': 100, 'rows': 15, 'class': 'form-control col-lg-8 mb-2'}))
 
 def index(request):
     return render(request, "encyclopedia/index.html", {

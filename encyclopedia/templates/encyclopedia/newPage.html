@@ -4,6 +4,6 @@
 
 <form action="{% url 'newPage'  %}" method="post">
   {% csrf_token %} {{ newEntryForm }}
-  <input type="submit" value="Save entry" />
+  <input type="submit" value="Save entry" class="btn btn-primary" />
 </form>
 {% endblock %}
